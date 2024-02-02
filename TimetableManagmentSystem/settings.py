@@ -76,11 +76,18 @@ WSGI_APPLICATION = 'TimetableManagmentSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+DATABASES =  {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'mssql',
+        'NAME': '',
+        'HOST': '',
+        'PORT': '1433',  # Default port is usually 1433
+        'USER': '',
+        'PASSWORD': '',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',  # Change the driver based on your setup
+        },
+    },
 }
 
 

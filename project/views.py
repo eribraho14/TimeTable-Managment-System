@@ -74,7 +74,7 @@ def register(request):
 def create_timetable(request):
 
     # with connections['database'].cursor() as cursor1:
-    #     cursor1.execute("EXEC your_first_view_name")  # Replace 'your_first_view_name' with the actual name of your first view
+    #     cursor1.execute("SELECT * ") # Replace 'your_first_view_name' with the actual name of your first view
     #     results1 = dictfetchall(cursor1)
 
     # # Execute the second view or query
@@ -88,6 +88,23 @@ def create_timetable(request):
     # return render(request, 'your_combined_template.html', context)
             return render(request, 'krijo-orar.html')
 
+def timetable_list(request):
+
+    # with connections['database'].cursor() as cursor1:
+    #     cursor1.execute("SELECT * ") # Replace 'your_first_view_name' with the actual name of your first view
+    #     results1 = dictfetchall(cursor1)
+
+    # # Execute the second view or query
+    # with connections['database'].cursor() as cursor2:
+    #     cursor2.execute("EXEC your_second_view_name")  # Replace 'your_second_view_name' with the actual name of your second view
+    #     results2 = dictfetchall(cursor2)
+
+    # # Combine the results into a single context
+    # context = {'results1': results1, 'results2': results2}
+
+    # return render(request, 'your_combined_template.html', context)
+            return render(request, 'lista-e-orarit.html')
+
 # def get_options(request):
 #     dega = request.GET.get('dega')
 #     viti = request.GET.get('viti')
@@ -98,3 +115,73 @@ def create_timetable(request):
 #         options = dictfetchall(cursor)
 
 #     return JsonResponse(options, safe=False)
+
+
+
+
+
+
+# context={}
+#     results = None
+#     if request.method == 'POST':
+#          PrincipalAmount = request.POST.get('PrincipalAmount')
+#          PrincipalAmountprev = request.POST.get('PrincipalAmountprev')
+#          PrincipalAmountEMerge = request.POST.get('PrincipalAmountEMerge')
+#          PrincipalAmountEMergeprev = request.POST.get('PrincipalAmountEMergeprev')
+#          Item_id = request.POST.get('item_id')
+#          Search_Item_id = request.POST.get('search_item_id')
+#          DisbursementValue = request.POST.get('DisbursementValue')
+#          DisbursementValueprev = request.POST.get('DisbursementValueprev')
+#          CCDesInterestRate = request.POST.get('CCDesInterestRate')
+#          CCDesInterestRateprev = request.POST.get('CCDesInterestRateprev')
+#          CCDesPPI = request.POST.get('CCDesPPI')
+#          CCDesPPIprev = request.POST.get('CCDesPPIprev')
+    
+#          if Search_Item_id != '' :
+#             with connections['saspo_training'].cursor() as cursor:
+#                 cursor.execute("EXEC [dbo].[Search_Pan_Support] @Operation=%s, @item_id=%s", ["S",Search_Item_id])
+#                 results = dictfetchall(cursor)
+#                 context={'results':results[0]}
+                
+#                 cursor.close()
+#          else:
+#             if Item_id is not '' :
+#               with connections['saspo_training'].cursor() as cursor:
+#                    cursor.execute("EXEC [dbo].[Search_Pan_Support] @Operation=%s, @item_id=%s", ["S",Item_id])
+#                    results = dictfetchall(cursor)
+#                    context={'results':results[0]}
+#                    cursor.close()
+#               if len(results) > 0:
+#                 result = results[0]  # Access the first dictionary in the results list
+              
+#                 if DisbursementValue != DisbursementValueprev:
+#                    with connections['saspo_training'].cursor() as cursor:
+#                     cursor.execute("EXEC [dbo].[PanSupport_changes]  @Operation=%s,@Code=%s,@DisbursementValue=%s,@item_id=%s", ["U","O",DisbursementValue,Item_id])
+#                     cursor.close()
+#                 connection.commit()
+#                 if PrincipalAmount != PrincipalAmountprev:
+#                   with connections['saspo_training'].cursor() as cursor:
+#                      cursor.execute("EXEC [dbo].[PanSupport_changes]  @Operation=%s,@Code=%s,@PrincipalAmount=%s,@item_id=%s", ["U","O",PrincipalAmount,Item_id])
+#                      cursor.close()
+#                 connection.commit()
+#                 if PrincipalAmountEMerge != PrincipalAmountEMergeprev:
+#                   with connections['saspo_training'].cursor() as cursor:
+#                      cursor.execute("EXEC [dbo].[PanSupport_changes]  @Operation=%s,@Code=%s,@PrincipalAmountEMerge=%s,@item_id=%s", ["U","O",PrincipalAmountEMerge,Item_id])
+#                      cursor.close()
+#                 connection.commit()
+              
+#                 if CCDesInterestRate != CCDesInterestRateprev:
+                 
+#                    with connections['saspo_training'].cursor() as cursor:
+#                     cursor.execute("EXEC [dbo].[PanSupport_changes]  @Operation=%s,@Code=%s,@CCDesInterestRate=%s,@item_id=%s", ["U","O",CCDesInterestRate,Item_id])
+#                     cursor.close()
+#                 connection.commit()
+             
+#               if CCDesPPI != CCDesPPIprev:
+                  
+#                   with connections['saspo_training'].cursor() as cursor:
+#                    cursor.execute("EXEC [dbo].[PanSupport_changes]  @Operation=%s,@Code=%s,@CCDesPPI=%s,@item_id=%s", ["U","O",CCDesPPI,Item_id])
+#                    cursor.close()
+#               connection.commit()
+#               messages.success(request,'Ndryshimet u regjistruan!')
+#               return redirect ('forma-e-vendimit')
