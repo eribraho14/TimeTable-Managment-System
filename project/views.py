@@ -7,11 +7,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db import connections
 from django.db import connection
-# from .forms import RegistrationForm
+from django.contrib.auth import login
+from django.db import connections
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db import connections
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -26,50 +33,56 @@ def view_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
-        try:
-            if connect.bind():
-                user, _ = User.objects.get_or_create(username=username)
-                with connections['saspo_training'].cursor() as cursor:
-                 cursor.execute("EXEC [dbo].[Panel_Support_Login]  @Username=%s", [username])
-                 result_set = cursor.fetchall()
-                 result_message = result_set[0][0]
-                 if result_message == 'Login successful':
+
+        with connections['default'].cursor() as cursor:
+            cursor.execute("EXEC [dbo].[UserLogin] @username=%s, @Password=%s", [username, password])
+            result_set = cursor.fetchall()
+            result_message = result_set[0][0]
+            print(result_message) 
+            print(password)
+            if result_message == 'Login successful':
                 # Successful authentication
-                   print("LDAP Bind Successful")
-                   login(request, user)
-                   return redirect('partneret')
-                 else:
-                     messages.error(request, 'You are not allowed to sign in')
+                user = authenticate(request, username=username, password=password)
+                
+                return redirect('krijo-orar')
+                
             else:
-                messages.error(request, 'Invalid username or password ')
-        except Exception as e:
-            print(f"LDAP Error: {str(e)}")
-        finally:
-            Connection.unbind()
+                messages.error(request, 'Invalid username or password')
 
-
-    
     return render(request, 'login.html')
 
-
 def register(request):
+    
+    with connections['default'].cursor() as cursor1:
+      cursor1.execute("SELECT * from  RoleView") # Replace 'your_first_view_name' with the actual name of your first view
+      results1 = dictfetchall(cursor1)
+    
+    with connections['default'].cursor() as cursor2:
+      cursor2.execute("SELECT * from  ProgramView") # Replace 'your_first_view_name' with the actual name of your first view
+      results2 = dictfetchall(cursor2)
 
-    # if request.method == 'GET':
-    #     form = RegistrationForm()
-        
-    #     return render(request, 'register.html', {'form': form}) 
-     
-    # if request.method == 'POST':
-    #     form = RegistrationForm(request.POST)
-    #     if form.is_valid():
-    #         user = form.save(commit=False)
-    #         user.username = user.username.lower()
-    #         user.save()
-    #         messages.success(request, 'You have register successfully.')
-    #         return render(request, 'register.html', {'form': form})
-    #     else:
-            return render(request, 'register-user.html')
+    with connections['default'].cursor() as cursor3:
+      cursor3.execute("SELECT * from  DepartmentView") # Replace 'your_first_view_name' with the actual name of your first view
+      results3 = dictfetchall(cursor3)
+      context = {'results1': results1, 'results2': results2,'results3': results3}
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        emri = request.POST.get('emri')
+        mbiemri = request.POST.get('Mbiemri')
+        profili = request.POST.get('Profili')
+        dega = request.POST.get('Dega')
+        departamenti = request.POST.get('Departamenti')
+        Grupi = request.POST.get('Grupi')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+         
+        with connections['default'].cursor() as cursor4:
+                cursor4.execute("EXEC [dbo].[RegisterUser]  @Username=%s,@password=%s,@email=%s,@RoleId=%s,@Name=%s,@Surname=%s,@Dega=%s,@DepartmentID=%s,@ClassSectionID=%s", [username,password,email,profili,emri,mbiemri,dega,departamenti,Grupi])
+                cursor4.close()
+                connection.commit()
+   
+    return render(request, 'register-user.html',context)
 
 def create_timetable(request):
 
